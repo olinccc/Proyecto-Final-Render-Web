@@ -18,21 +18,6 @@ const canvas = document.querySelector('canvas.webgl')
 const scene = new THREE.Scene()
 
 /**
- * Floor
- */
-const floor = new THREE.Mesh(
-    new THREE.PlaneGeometry(10, 10),
-    new THREE.MeshStandardMaterial({
-        color: '#444444',
-        metalness: 0,
-        roughness: 0.5
-    })
-)
-floor.receiveShadow = true
-floor.rotation.x = - Math.PI * 0.5
-scene.add(floor)
-
-/**
  * Lights
  */
 const ambientLight = new THREE.AmbientLight(0xffffff, 2.4)
@@ -99,16 +84,36 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 let mixer = null;
 const gltfLoader = new GLTFLoader();
 gltfLoader.load(
-    '/models/Fox/glTF/Fox.gltf',
+    '/models/tv/scene.gltf',
     function (gltf)  {
-       console.log(gltf);
-       gltf.scene.scale.set(0.025, 0.025, 0.025);
+       console.log('Modelo cargado:', gltf);
+       
+       // Posicionar y escalar el modelo
+       gltf.scene.scale.set(4, 4, 4);
+       gltf.scene.position.set(0, 0, 0);
+       
+       // Habilitar sombras en todos los meshes
+       gltf.scene.traverse((child) => {
+           if (child.isMesh) {
+               child.castShadow = true;
+               child.receiveShadow = true;
+           }
+       });
+       
        scene.add(gltf.scene);
 
        // Animation
-       mixer = new THREE.AnimationMixer(gltf.scene);
-       const action = mixer.clipAction(gltf.animations[0]);
-       action.play();
+       if (gltf.animations && gltf.animations.length > 0) {
+           mixer = new THREE.AnimationMixer(gltf.scene);
+           const action = mixer.clipAction(gltf.animations[0]);
+           action.play();
+       }
+    },
+    function (progress) {
+       console.log('Progreso:', (progress.loaded / progress.total * 100) + '%');
+    },
+    function (error) {
+       console.error('Error cargando el modelo:', error);
     }
 );
 
