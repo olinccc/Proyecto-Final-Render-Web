@@ -1,0 +1,11 @@
+Model Information:
+* title:	1990 TV
+* source:	https://sketchfab.com/3d-models/1990-tv-f4a523c95d964e1c973856c9b2bca233
+* author:	Warkarma (https://sketchfab.com/warkarma)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "1990 TV" (https://sketchfab.com/3d-models/1990-tv-f4a523c95d964e1c973856c9b2bca233) by Warkarma (https://sketchfab.com/warkarma) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
