@@ -10,9 +10,13 @@ body
     overflow: hidden;
 }
 
-/* Page background color */
+/* Page background image */
 body {
-    background: #000000; /* negro */
+    background-image: url('/fondocute.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 .webgl

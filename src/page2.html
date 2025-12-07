@@ -11,17 +11,41 @@
         }
         
         body {
-            background: #1e88e5;
+            background: #000000;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             font-family: Arial, sans-serif;
-            color: white;
+            color: #333;
+            cursor: url('/mosca.png') 16 16, auto;
+            overflow: hidden;
+            position: relative;
+            margin: 0;
+            padding: 0;
+        }
+        
+        * {
+            cursor: url('/mosca.png') 16 16, auto !important;
+        }
+        
+        #background-video {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+            z-index: 0;
         }
         
         .container {
             text-align: center;
+            z-index: 10;
+            position: relative;
         }
         
         h1 {
@@ -37,25 +61,50 @@
         a {
             display: inline-block;
             padding: 15px 30px;
-            background: white;
-            color: #1e88e5;
+            background: #333;
+            color: white;
             text-decoration: none;
             border-radius: 5px;
             font-weight: bold;
             transition: all 0.3s ease;
+            cursor: url('/mosca.png'), pointer;
         }
         
         a:hover {
-            background: #f0f0f0;
+            background: #555;
             transform: scale(1.05);
+        }
+        
+        .mosca-trail {
+            position: absolute;
+            pointer-events: none;
+            width: 45px;
+            height: 45px;
+            background-image: url('/mosca.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            z-index: 10;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>¡Hiciste click en el objeto!</h1>
-        <p>Has llegado a la segunda página.</p>
-        <a href="index.html">Volver atrás</a>
-    </div>
+    <video id="background-video" autoplay loop muted playsinline>
+        <source src="/noise.mp4" type="video/mp4">
+        Tu navegador no soporta el elemento de video.
+    </video>
+    
+    <script>
+        // Agregar rastro de moscas al hacer click
+        document.addEventListener('click', (e) => {
+            const mosca = document.createElement('div');
+            mosca.className = 'mosca-trail';
+            mosca.style.left = (e.clientX - 22.5) + 'px';
+            mosca.style.top = (e.clientY - 22.5) + 'px';
+            document.body.appendChild(mosca);
+            
+            // Opcional: remover la mosca después de un tiempo
+            // setTimeout(() => mosca.remove(), 5000);
+        });
+    </script>
 </body>
 </html>

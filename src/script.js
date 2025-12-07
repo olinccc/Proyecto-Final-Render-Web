@@ -96,23 +96,23 @@ window.addEventListener('resize', () =>
  */
 // Base camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
-camera.position.set(2, 2, 2)
+camera.position.set(0, 2, 5)
 scene.add(camera)
 
 // Controls
 const controls = new OrbitControls(camera, canvas)
-controls.target.set(0, 0.75, 0)
+controls.target.set(0, 1.5, 0)
 controls.enableDamping = true
 
 /**
  * Renderer
  */
 const renderer = new THREE.WebGLRenderer({
-    canvas: canvas
+    canvas: canvas,
+    alpha: true // Hace el canvas transparente
 })
-// Make renderer clear to black that matches the page background
-renderer.setClearColor('#000000')
-renderer.setClearAlpha(1)
+// Hacer el fondo del renderer transparente para ver el fondo de la página
+renderer.setClearColor('#000000', 0)
 renderer.shadowMap.enabled = true
 renderer.shadowMap.type = THREE.PCFSoftShadowMap
 renderer.setSize(sizes.width, sizes.height)
@@ -174,8 +174,31 @@ const tick = () =>
        mixer.update(deltaTime)
     }
 
-    // Update controls
-    controls.update()
+    // Animación de zoom hacia el objeto
+    if (isZooming) {
+        zoomProgress += deltaTime / zoomDuration
+        
+        if (zoomProgress >= 1) {
+            // Navegar a la segunda página cuando termine la animación
+            window.location.href = 'page2.html'
+        } else {
+            // Interpolación suave (easing)
+            const easeProgress = zoomProgress < 0.5 
+                ? 2 * zoomProgress * zoomProgress 
+                : 1 - Math.pow(-2 * zoomProgress + 2, 2) / 2
+            
+            // Actualizar posición de la cámara
+            camera.position.x = startCameraPosition.x + (targetPosition.x - startCameraPosition.x) * easeProgress
+            camera.position.y = startCameraPosition.y + (targetPosition.y - startCameraPosition.y) * easeProgress
+            camera.position.z = startCameraPosition.z + (targetPosition.z - startCameraPosition.z) * easeProgress
+            
+            // Mirar hacia el objeto
+            camera.lookAt(0, 1, 0)
+        }
+    } else {
+        // Update controls solo si no está en animación
+        controls.update()
+    }
 
     // Render
     renderer.render(scene, camera)
@@ -184,8 +207,18 @@ const tick = () =>
     window.requestAnimationFrame(tick)
 }
 
+// Variables para la animación de zoom
+let isZooming = false
+const startCameraPosition = { x: 0, y: 2, z: 5 }
+const targetPosition = { x: 0, y: 1, z: 0.5 }
+let zoomProgress = 0
+const zoomDuration = 1.5 // segundos
+
 // Event listener para detectar clicks en el objeto 3D
 canvas.addEventListener('click', (event) => {
+    // No permitir clicks mientras está en animación
+    if (isZooming) return
+    
     // Calcular la posición normalizada del mouse
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
@@ -199,8 +232,10 @@ canvas.addEventListener('click', (event) => {
         
         if (intersects.length > 0) {
             console.log('¡Clickeaste el objeto!')
-            // Navegar a la segunda página
-            window.location.href = 'page2.html'
+            // Iniciar animación de zoom
+            isZooming = true
+            controls.enabled = false // Deshabilitar controles durante la animación
+            zoomProgress = 0
         }
     }
 })
