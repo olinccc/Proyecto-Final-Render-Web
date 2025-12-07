@@ -48,7 +48,7 @@ const plane = new THREE.Mesh(
         transparent: true // Por si la imagen tiene transparencia
     })
 )
-plane.position.set(0, 3, 0)
+plane.position.set(0, 2, 0)
 scene.add(plane)
 
 /**
@@ -96,12 +96,12 @@ window.addEventListener('resize', () =>
  */
 // Base camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
-camera.position.set(0, 2, 5)
+camera.position.set(0, 0.5, 5)
 scene.add(camera)
 
 // Controls
 const controls = new OrbitControls(camera, canvas)
-controls.target.set(0, 1.5, 0)
+controls.target.set(0, 0, 0)
 controls.enableDamping = true
 
 /**
@@ -192,8 +192,8 @@ const tick = () =>
             camera.position.y = startCameraPosition.y + (targetPosition.y - startCameraPosition.y) * easeProgress
             camera.position.z = startCameraPosition.z + (targetPosition.z - startCameraPosition.z) * easeProgress
             
-            // Mirar hacia el objeto
-            camera.lookAt(0, 1, 0)
+            // Mirar siempre al centro del TV
+            camera.lookAt(0, 0, 0)
         }
     } else {
         // Update controls solo si no está en animación
@@ -209,10 +209,10 @@ const tick = () =>
 
 // Variables para la animación de zoom
 let isZooming = false
-const startCameraPosition = { x: 0, y: 2, z: 5 }
-const targetPosition = { x: 0, y: 1, z: 0.5 }
+const startCameraPosition = { x: 0, y: 0.5, z: 5 }
+const targetPosition = { x: 0, y: 0, z: 0.5 }
 let zoomProgress = 0
-const zoomDuration = 1.5 // segundos
+const zoomDuration = 1.0 // segundos
 
 // Event listener para detectar clicks en el objeto 3D
 canvas.addEventListener('click', (event) => {
@@ -234,7 +234,7 @@ canvas.addEventListener('click', (event) => {
             console.log('¡Clickeaste el objeto!')
             // Iniciar animación de zoom
             isZooming = true
-            controls.enabled = false // Deshabilitar controles durante la animación
+            controls.enabled = false
             zoomProgress = 0
         }
     }

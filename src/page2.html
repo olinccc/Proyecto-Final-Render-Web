@@ -105,6 +105,18 @@
             // Opcional: remover la mosca después de un tiempo
             // setTimeout(() => mosca.remove(), 5000);
         });
+        
+        // Cambiar a fondo blanco después de 3 segundos
+        setTimeout(() => {
+            const video = document.getElementById('background-video');
+            video.style.transition = 'opacity 1s ease';
+            video.style.opacity = '0';
+            
+            setTimeout(() => {
+                video.remove();
+                document.body.style.background = '#ffffff';
+            }, 1000); // Esperar a que termine la transición
+        }, 3000); // 3 segundos
     </script>
 </body>
 </html>
