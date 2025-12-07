@@ -1,7 +1,6 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import GUI from 'lil-gui'
-import { Text } from 'troika-three-text'
 
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 console.log(GLTFLoader)
@@ -22,6 +21,35 @@ const scene = new THREE.Scene()
 const raycaster = new THREE.Raycaster()
 const mouse = new THREE.Vector2()
 let clickableObject = null
+
+/**
+ * Plane with Texture
+ */
+const textureLoader = new THREE.TextureLoader()
+const webbenTexture = textureLoader.load('/webben.png', (texture) => {
+    // Cuando la textura cargue, ajustar el tamaño del plano según sus proporciones
+    const img = texture.image
+    const aspectRatio = img.width / img.height
+    
+    // Definir una altura base y calcular el ancho proporcionalmente
+    const planeHeight = 3
+    const planeWidth = planeHeight * aspectRatio
+    
+    // Actualizar la geometría del plano
+    plane.geometry.dispose()
+    plane.geometry = new THREE.PlaneGeometry(planeWidth, planeHeight)
+})
+
+const plane = new THREE.Mesh(
+    new THREE.PlaneGeometry(6, 3), // Tamaño temporal hasta que cargue la textura
+    new THREE.MeshStandardMaterial({
+        map: webbenTexture,
+        side: THREE.DoubleSide,
+        transparent: true // Por si la imagen tiene transparencia
+    })
+)
+plane.position.set(0, 3, 0)
+scene.add(plane)
 
 /**
  * Lights
@@ -82,8 +110,8 @@ controls.enableDamping = true
 const renderer = new THREE.WebGLRenderer({
     canvas: canvas
 })
-// Make renderer clear to a blue that matches the page background
-renderer.setClearColor('#1e88e5')
+// Make renderer clear to black that matches the page background
+renderer.setClearColor('#000000')
 renderer.setClearAlpha(1)
 renderer.shadowMap.enabled = true
 renderer.shadowMap.type = THREE.PCFSoftShadowMap
@@ -128,23 +156,6 @@ gltfLoader.load(
        console.error('Error cargando el modelo:', error);
     }
 );
-
-const myText = new Text()
-myText.text = 'bienveniDx'
-myText.fontSize = 0.5
-myText.position.set(0, 2, 0)
-myText.color = 0xffffff
-myText.anchorX = 'center'
-myText.anchorY = 'middle'
-scene.add(myText)
-myText.sync()
-
-// Aplicar la fuente después de un pequeño delay para que se cargue
-setTimeout(() => {
-    myText.font = 'yoon-px-pixelbatang'
-    myText.sync()
-    console.log('Fuente yoon-px-pixelbatang aplicada')
-}, 2000)
 
 /**
  * Animate
