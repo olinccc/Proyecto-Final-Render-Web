@@ -10,6 +10,11 @@ body
     overflow: hidden;
 }
 
+/* Page background color */
+body {
+    background: #1e88e5; /* azul */
+}
+
 .webgl
 {
     position: fixed;

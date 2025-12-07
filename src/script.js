@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import GUI from 'lil-gui'
+import { Text } from 'troika-three-text'
 
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 console.log(GLTFLoader)
@@ -16,6 +17,11 @@ const canvas = document.querySelector('canvas.webgl')
 
 // Scene
 const scene = new THREE.Scene()
+
+// Raycaster para detectar clicks en objetos 3D
+const raycaster = new THREE.Raycaster()
+const mouse = new THREE.Vector2()
+let clickableObject = null
 
 /**
  * Lights
@@ -76,6 +82,9 @@ controls.enableDamping = true
 const renderer = new THREE.WebGLRenderer({
     canvas: canvas
 })
+// Make renderer clear to a blue that matches the page background
+renderer.setClearColor('#1e88e5')
+renderer.setClearAlpha(1)
 renderer.shadowMap.enabled = true
 renderer.shadowMap.type = THREE.PCFSoftShadowMap
 renderer.setSize(sizes.width, sizes.height)
@@ -108,6 +117,9 @@ gltfLoader.load(
            const action = mixer.clipAction(gltf.animations[0]);
            action.play();
        }
+       
+       // Guardar el modelo como objeto clickeable
+       clickableObject = gltf.scene;
     },
     function (progress) {
        console.log('Progreso:', (progress.loaded / progress.total * 100) + '%');
@@ -117,7 +129,22 @@ gltfLoader.load(
     }
 );
 
+const myText = new Text()
+myText.text = 'bienveniDx'
+myText.fontSize = 0.5
+myText.position.set(0, 2, 0)
+myText.color = 0xffffff
+myText.anchorX = 'center'
+myText.anchorY = 'middle'
+scene.add(myText)
+myText.sync()
 
+// Aplicar la fuente después de un pequeño delay para que se cargue
+setTimeout(() => {
+    myText.font = 'yoon-px-pixelbatang'
+    myText.sync()
+    console.log('Fuente yoon-px-pixelbatang aplicada')
+}, 2000)
 
 /**
  * Animate
@@ -145,5 +172,26 @@ const tick = () =>
     // Call tick again on the next frame
     window.requestAnimationFrame(tick)
 }
+
+// Event listener para detectar clicks en el objeto 3D
+canvas.addEventListener('click', (event) => {
+    // Calcular la posición normalizada del mouse
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
+    
+    // Lanzar el rayo desde la cámara
+    raycaster.setFromCamera(mouse, camera)
+    
+    // Verificar intersecciones con el objeto
+    if (clickableObject) {
+        const intersects = raycaster.intersectObject(clickableObject, true)
+        
+        if (intersects.length > 0) {
+            console.log('¡Clickeaste el objeto!')
+            // Navegar a la segunda página
+            window.location.href = 'page2.html'
+        }
+    }
+})
 
 tick()
