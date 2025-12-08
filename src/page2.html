@@ -20,13 +20,33 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            font-family: Arial, sans-serif;
+            font-family: 'Myriad Pro', Arial, sans-serif;
             color: #333;
             cursor: url('/mosca.png') 16 16, auto;
             overflow: hidden;
             position: relative;
             margin: 0;
             padding: 0;
+        }
+        
+        .title {
+            position: fixed;
+            left: 50px;
+            top: 50%;
+            transform: translateY(-50%) scaleY(3.5);
+            font-family: 'Myriad Pro', Arial, sans-serif;
+            font-size: 10em;
+            font-weight: 400;
+            color: #000;
+            z-index: 50;
+            text-align: left;
+            filter: blur(4px);
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+        
+        .title.show {
+            opacity: 1;
         }
         
         * {
@@ -93,7 +113,7 @@
         #comida-image {
             position: fixed;
             top: 50%;
-            left: 70%;
+            left: 85%;
             transform: translate(-50%, -50%);
             max-width: 80%;
             max-height: 80%;
@@ -120,6 +140,8 @@
         <source src="/noise.mp4" type="video/mp4">
         Tu navegador no soporta el elemento de video.
     </video>
+    
+    <h1 class="title">rancid city</h1>
     
     <img id="comida-image" src="/comidapodri.png" alt="Comida podrida">
     
@@ -149,7 +171,7 @@
             // setTimeout(() => mosca.remove(), 5000);
         });
         
-        // Cambiar a fondo blanco después de 3 segundos
+        // Quitar el video después de 3 segundos y mostrar el título
         setTimeout(() => {
             const video = document.getElementById('background-video');
             video.style.transition = 'opacity 1s ease';
@@ -157,7 +179,9 @@
             
             setTimeout(() => {
                 video.remove();
-                document.body.style.background = '#ffffff';
+                // Mostrar el título después de que se quite el video
+                const title = document.querySelector('.title');
+                title.classList.add('show');
             }, 1000); // Esperar a que termine la transición
         }, 3000); // 3 segundos
         
