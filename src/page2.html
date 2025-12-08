@@ -5,13 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rancid City</title>
     <style>
+        /* Reset de estilos globales */
         * {
             margin: 0;
             padding: 0;
         }
         
+        /* Estilos del body - textura de fondo y cursor personalizado */
         body {
-            background-image: url('/textura.png');
+            background-image: url('/textura.png'); /* Fondo con textura que permanece */
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -22,37 +24,41 @@
             height: 100vh;
             font-family: 'Myriad Pro', Arial, sans-serif;
             color: #333;
-            cursor: url('/mosca.png') 16 16, auto;
+            cursor: url('/mosca.png') 16 16, auto; /* Cursor personalizado de mosca */
             overflow: hidden;
             position: relative;
             margin: 0;
             padding: 0;
         }
         
+        /* Título "rancid city" con distorsión vertical */
         .title {
             position: fixed;
             left: 50px;
             top: 50%;
-            transform: translateY(-50%) scaleY(3.5);
+            transform: translateY(-50%) scaleY(3.5); /* Distorsión vertical 3.5x */
             font-family: 'Myriad Pro', Arial, sans-serif;
             font-size: 10em;
-            font-weight: 400;
+            font-weight: 400; /* Regular */
             color: #000;
             z-index: 50;
             text-align: left;
-            filter: blur(4px);
-            opacity: 0;
+            filter: blur(4px); /* Desenfoque ligero */
+            opacity: 0; /* Oculto inicialmente */
             transition: opacity 1s ease;
         }
         
+        /* Clase para mostrar el título después del video */
         .title.show {
             opacity: 1;
         }
         
+        /* Aplicar cursor de mosca a todos los elementos */
         * {
             cursor: url('/mosca.png') 16 16, auto !important;
         }
         
+        /* Video de fondo (noise.mp4) que se reproduce 3 segundos */
         #background-video {
             position: fixed;
             top: 50%;
@@ -62,10 +68,11 @@
             width: auto;
             height: auto;
             transform: translate(-50%, -50%);
-            object-fit: cover;
+            object-fit: cover; /* Cubrir toda la pantalla */
             z-index: 0;
         }
         
+        /* Estilos no utilizados actualmente */
         .container {
             text-align: center;
             z-index: 10;
@@ -99,9 +106,10 @@
             transform: scale(1.05);
         }
         
+        /* Rastros de moscas que aparecen al hacer click */
         .mosca-trail {
             position: absolute;
-            pointer-events: none;
+            pointer-events: none; /* No interfiere con otros clicks */
             width: 45px;
             height: 45px;
             background-image: url('/mosca.png');
@@ -110,25 +118,28 @@
             z-index: 10;
         }
         
+        /* Imagen de comida podrida que aparece después de 7 clicks */
         #comida-image {
             position: fixed;
             top: 50%;
-            left: 85%;
+            left: 85%; /* Posicionada a la derecha */
             transform: translate(-50%, -50%);
             max-width: 80%;
             max-height: 80%;
-            z-index: 100;
-            display: none;
+            z-index: 100; /* Arriba de todo */
+            display: none; /* Oculta inicialmente */
             opacity: 0;
             transition: opacity 1s ease;
-            cursor: pointer;
+            cursor: pointer; /* Clickeable para ir a page3 */
         }
         
+        /* Efecto hover en la imagen */
         #comida-image:hover {
             transform: translate(-50%, -50%) scale(1.05);
             transition: all 0.3s ease;
         }
         
+        /* Clase para mostrar la imagen */
         #comida-image.show {
             display: block;
             opacity: 1;
@@ -136,23 +147,28 @@
     </style>
 </head>
 <body>
+    <!-- Video de fondo que se reproduce por 3 segundos -->
     <video id="background-video" autoplay loop muted playsinline>
         <source src="/noise.mp4" type="video/mp4">
         Tu navegador no soporta el elemento de video.
     </video>
     
+    <!-- Título "rancid city" distorsionado que aparece después del video -->
     <h1 class="title">rancid city</h1>
     
+    <!-- Imagen de comida podrida que aparece después de 7 clicks -->
     <img id="comida-image" src="/comidapodri.png" alt="Comida podrida">
     
     <script>
-        // Contador de clicks
+        // ===== CONTADOR DE CLICKS =====
         let clickCount = 0;
         
-        // Agregar rastro de moscas al hacer click
+        // ===== EVENTO: Agregar rastro de moscas al hacer click =====
         document.addEventListener('click', (e) => {
+            // Crear elemento div con la imagen de mosca
             const mosca = document.createElement('div');
             mosca.className = 'mosca-trail';
+            // Posicionar en las coordenadas del click (centrado)
             mosca.style.left = (e.clientX - 22.5) + 'px';
             mosca.style.top = (e.clientY - 22.5) + 'px';
             document.body.appendChild(mosca);
@@ -161,31 +177,31 @@
             clickCount++;
             console.log('Clicks:', clickCount);
             
-            // Mostrar imagen después de 7 clicks
+            // Mostrar imagen de comida podrida después de 7 clicks
             if (clickCount === 7) {
                 const comidaImage = document.getElementById('comida-image');
                 comidaImage.classList.add('show');
             }
             
-            // Opcional: remover la mosca después de un tiempo
+            // Opcional: remover la mosca después de un tiempo para liberar memoria
             // setTimeout(() => mosca.remove(), 5000);
         });
         
-        // Quitar el video después de 3 segundos y mostrar el título
+        // ===== ANIMACIÓN: Quitar video y mostrar título =====
         setTimeout(() => {
             const video = document.getElementById('background-video');
             video.style.transition = 'opacity 1s ease';
-            video.style.opacity = '0';
+            video.style.opacity = '0'; // Fade out del video
             
             setTimeout(() => {
-                video.remove();
-                // Mostrar el título después de que se quite el video
+                video.remove(); // Eliminar video del DOM
+                // Mostrar el título "rancid city" con fade in
                 const title = document.querySelector('.title');
                 title.classList.add('show');
-            }, 1000); // Esperar a que termine la transición
-        }, 3000); // 3 segundos
+            }, 1000); // Esperar 1 segundo (duración del fade out)
+        }, 3000); // Iniciar después de 3 segundos
         
-        // Click en la imagen para ir a la siguiente página
+        // ===== NAVEGACIÓN: Click en imagen para ir a page3 =====
         document.getElementById('comida-image').addEventListener('click', () => {
             window.location.href = 'page3.html';
         });
