@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rancid City</title>
     
-    <!-- Adobe Typekit para cargar fuentes personalizadas -->
     <script>
       (function(d) {
         var config = {
@@ -18,15 +17,13 @@
     </script>
     
     <style>
-        /* Reset de estilos globales */
         * {
             margin: 0;
             padding: 0;
         }
         
-        /* Estilos del body - imagen de fondo y configuración general */
         body {
-            background-image: url('/fondo_e3.jpg'); /* Imagen de fondo que se revela al borrar */
+            background-image: url('/fondo_e3.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -35,13 +32,12 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            font-family: 'yoon-px-pixelbatang', Arial, sans-serif; /* Fuente de Adobe Typekit */
+            font-family: 'yoon-px-pixelbatang', Arial, sans-serif;
             color: #333;
             overflow: hidden;
             position: relative;
         }
 
-        /* Capa de rompecabezas (no se usa actualmente, reemplazada por canvas) */
         #puzzle-layer {
             position: fixed;
             top: 0;
@@ -70,39 +66,34 @@
             pointer-events: none;
         }
         
-        /* Contenedor del texto central */
         .content {
             text-align: center;
             z-index: 10;
-            max-width: 800px; /* Ancho máximo para mejor legibilidad */
-            padding: 0 60px; /* Espaciado lateral */
+            max-width: 800px;
+            padding: 0 60px;
         }
         
-        /* Estilos del título principal */
         h1 {
             font-size: 7em;
             margin-bottom: 20px;
-            line-height: 1.2; /* Espaciado entre líneas compacto */
-            color: #ff006a; /* Color rosa */
-            word-wrap: break-word; /* Ajuste de palabras largas */
+            line-height: 1.2;
+            color: #ff006a;
+            word-wrap: break-word;
             overflow-wrap: break-word;
         }
         
-        /* Responsive - pantallas medianas */
         @media (max-width: 1200px) {
             h1 {
                 font-size: 5em;
             }
         }
         
-        /* Responsive - pantallas pequeñas */
         @media (max-width: 768px) {
             h1 {
                 font-size: 3em;
             }
         }
         
-        /* Canvas para la capa amarilla borrable */
         canvas {
             position: fixed;
             top: 0;
@@ -110,28 +101,24 @@
             width: 100%;
             height: 100%;
             z-index: 100;
-            cursor: crosshair; /* Cursor de cruz para indicar herramienta de borrado */
+            cursor: crosshair;
         }
         
-        /* Efecto pixelado en toda la página */
         body {
             image-rendering: pixelated;
             image-rendering: -moz-crisp-edges;
             image-rendering: crisp-edges;
         }
         
-        /* Aplicar filtro SVG de pixelado a todos los elementos */
         body > * {
             transform: scale(1);
-            filter: url(#pixelate); /* Referencia al filtro SVG definido abajo */
+            filter: url(#pixelate);
         }
     </style>
 </head>
 <body>
-    <!-- SVG con filtro de pixelado oculto -->
     <svg style="position: absolute; width: 0; height: 0;">
         <defs>
-            <!-- Filtro SVG que crea el efecto pixelado -->
             <filter id="pixelate" x="0%" y="0%" width="100%" height="100%">
                 <feFlood x="4" y="4" height="2" width="2"/>
                 <feComposite width="10" height="10"/>
@@ -142,74 +129,55 @@
         </defs>
     </svg>
     
-    <!-- Canvas para la capa amarilla que se puede borrar -->
     <canvas id="eraser-canvas"></canvas>
     
-    <!-- Contenedor del texto principal -->
     <div class="content">
         <h1>Yesterday is gone; tomorrow is uncertain; today is here. Use it wisley.</h1>
     </div>
 
-    <!-- Script para el pincel borrador -->
     <script>
-        // Obtener el canvas y su contexto 2D
         const canvas = document.getElementById('eraser-canvas');
         const ctx = canvas.getContext('2d');
         
-        // Configurar el tamaño del canvas para que ocupe toda la ventana
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         
-        // Configurar opacidad del canvas al 85%
         ctx.globalAlpha = 0.85;
         
-        // Llenar el canvas con color amarillo (#fff423)
         ctx.fillStyle = '#fff423';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // Restaurar opacidad completa para el borrador
         ctx.globalAlpha = 1.0;
         
-        // Variables para controlar el estado del pincel
-        let isDrawing = false; // Indica si se está dibujando/borrando
-        const brushSize = 40; // Tamaño del pincel en píxeles
+        let isDrawing = false;
+        const brushSize = 40;
         
-        // Función para borrar el área bajo el cursor
         function erase(x, y) {
-            ctx.globalCompositeOperation = 'destination-out'; // Modo de borrado
+            ctx.globalCompositeOperation = 'destination-out';
             ctx.beginPath();
-            ctx.arc(x, y, brushSize, 0, Math.PI * 2); // Círculo del tamaño del pincel
+            ctx.arc(x, y, brushSize, 0, Math.PI * 2);
             ctx.fill();
         }
         
-        // ===== EVENTOS DEL MOUSE =====
-        
-        // Cuando se presiona el botón del mouse
         canvas.addEventListener('mousedown', (e) => {
             isDrawing = true;
-            erase(e.clientX, e.clientY); // Borrar en la posición inicial
+            erase(e.clientX, e.clientY);
         });
         
-        // Cuando se mueve el mouse
         canvas.addEventListener('mousemove', (e) => {
             if (isDrawing) {
-                erase(e.clientX, e.clientY); // Borrar mientras se arrastra
+                erase(e.clientX, e.clientY);
             }
         });
         
-        // Cuando se suelta el botón del mouse
         canvas.addEventListener('mouseup', () => {
             isDrawing = false;
         });
         
-        // Cuando el cursor sale del canvas
         canvas.addEventListener('mouseleave', () => {
             isDrawing = false;
         });
         
-        // ===== EVENTOS TÁCTILES (MÓVILES) =====
-        
-        // Cuando se toca la pantalla
         canvas.addEventListener('touchstart', (e) => {
             e.preventDefault();
             isDrawing = true;
@@ -217,7 +185,6 @@
             erase(touch.clientX, touch.clientY);
         });
         
-        // Cuando se mueve el dedo sobre la pantalla
         canvas.addEventListener('touchmove', (e) => {
             e.preventDefault();
             if (isDrawing) {
@@ -226,14 +193,10 @@
             }
         });
         
-        // Cuando se levanta el dedo de la pantalla
         canvas.addEventListener('touchend', () => {
             isDrawing = false;
         });
         
-        // ===== RESPONSIVE =====
-        
-        // Ajustar tamaño del canvas al redimensionar ventana (mantiene el progreso del borrado)
         window.addEventListener('resize', () => {
             const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
             canvas.width = window.innerWidth;

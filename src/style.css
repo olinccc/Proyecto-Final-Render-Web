@@ -10,7 +10,6 @@ body
     overflow: hidden;
 }
 
-/* Page background image */
 body {
     background-image: url('/fondocute.png');
     background-size: cover;
